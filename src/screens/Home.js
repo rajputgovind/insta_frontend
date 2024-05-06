@@ -5,14 +5,14 @@ import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 
 export default function Home() {
-  var picLink = "https://cdn-icons-png.flaticon.com/128/3177/3177440.png"
+  var picLink = "https://cdn-icons-png.flaticon.com/128/3177/3177440.png";
   const navigate = useNavigate();
   const [data, setData] = useState([]);
   const [comment, setComment] = useState("");
   const [show, setShow] = useState(false);
   const [item, setItem] = useState([]);
-  let limit = 10
-  let skip = 0
+  let limit = 10;
+  let skip = 0;
 
   // Toast functions
   const notifyA = (msg) => toast.error(msg);
@@ -23,36 +23,41 @@ export default function Home() {
     if (!token) {
       navigate("./signup");
     }
-fetchPosts()
+    fetchPosts();
 
-window.addEventListener("scroll",handleScroll)
-return ()=>{
-  window.removeEventListener("scroll",handleScroll)
-}
-    
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
   }, []);
 
-  const fetchPosts = ()=>{
+  const fetchPosts = () => {
     // Fetching all posts
-    fetch(`http://localhost:5000/allposts?limit=${limit}&skip=${skip}`, {
-      headers: {
-        Authorization: "Bearer " + localStorage.getItem("jwt"),
-      },
-    })
+    fetch(
+      `${process.env.REACT_APP_BACKEND_URL}/allposts?limit=${limit}&skip=${skip}`,
+      {
+        headers: {
+          Authorization: "Bearer " + localStorage.getItem("jwt"),
+        },
+      }
+    )
       .then((res) => res.json())
       .then((result) => {
         console.log(result);
-        setData((data)=>[...data, ...result]);
+        setData((data) => [...data, ...result]);
       })
       .catch((err) => console.log(err));
-  }
+  };
 
-  const handleScroll = ()=>{
-    if(document.documentElement.clientHeight + window.pageYOffset >= document.documentElement.scrollHeight){
-      skip = skip + 10
-      fetchPosts()
+  const handleScroll = () => {
+    if (
+      document.documentElement.clientHeight + window.pageYOffset >=
+      document.documentElement.scrollHeight
+    ) {
+      skip = skip + 10;
+      fetchPosts();
     }
-  }
+  };
 
   // to show and hide comments
   const toggleComment = (posts) => {
@@ -65,7 +70,7 @@ return ()=>{
   };
 
   const likePost = (id) => {
-    fetch("http://localhost:5000/like", {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/like`, {
       method: "put",
       headers: {
         "Content-Type": "application/json",
@@ -89,7 +94,7 @@ return ()=>{
       });
   };
   const unlikePost = (id) => {
-    fetch("http://localhost:5000/unlike", {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/unlike`, {
       method: "put",
       headers: {
         "Content-Type": "application/json",
@@ -115,7 +120,7 @@ return ()=>{
 
   // function to make comment
   const makeComment = (text, id) => {
-    fetch("http://localhost:5000/comment", {
+    fetch(`${process.env.REACT_APP_BACKEND_URL}/comment`, {
       method: "put",
       headers: {
         "Content-Type": "application/json",
